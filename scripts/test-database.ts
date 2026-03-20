@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { v4 as uuidv4 } from 'uuid';
 import prisma from '../lib/prisma';
 
 async function testDatabase() {
@@ -8,7 +9,7 @@ async function testDatabase() {
         const userCount = await prisma.user.count();
         console.log(`Connected to database. Current users: ${userCount}`);
 
-        const email = `starterkit-${Date.now()}@example.com`;
+        const email = `starterkit-${uuidv4()}@example.com`;
         const newUser = await prisma.user.create({
             data: {
                 email,
