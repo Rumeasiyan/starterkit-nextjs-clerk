@@ -12,6 +12,7 @@ async function testDatabase() {
         const email = `starterkit-${uuidv4()}@example.com`;
         const newUser = await prisma.user.create({
             data: {
+                clerkId: uuidv4(),
                 email,
                 name: 'StarterKit Test User',
             },
