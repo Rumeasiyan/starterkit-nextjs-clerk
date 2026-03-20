@@ -8,6 +8,7 @@ import {
 } from '@clerk/nextjs';
 import { Geist, Geist_Mono } from 'next/font/google';
 import Link from 'next/link';
+import Script from 'next/script';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import './globals.css';
@@ -49,8 +50,13 @@ export default function RootLayout({
             suppressHydrationWarning
             className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
         >
-            <head>
-                <script
+            <body
+                suppressHydrationWarning
+                className="min-h-full flex flex-col"
+            >
+                <Script
+                    id="theme-init"
+                    strategy="beforeInteractive"
                     dangerouslySetInnerHTML={{
                         __html: `(() => {
   const mode = ${JSON.stringify(themeMode)};
@@ -69,8 +75,6 @@ export default function RootLayout({
 })();`,
                     }}
                 />
-            </head>
-            <body className="min-h-full flex flex-col">
                 <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up">
                     <header className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
                         <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">

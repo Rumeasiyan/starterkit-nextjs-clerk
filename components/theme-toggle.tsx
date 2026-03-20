@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { MoonStar, SunMedium } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -15,7 +15,12 @@ function applyTheme(theme: Theme) {
     localStorage.setItem('theme', theme);
 }
 
+function subscribe() {
+    return () => {};
+}
+
 export function ThemeToggle() {
+    const mounted = useSyncExternalStore(subscribe, () => true, () => false);
     const [theme, setTheme] = useState<Theme>(() => {
         if (typeof document === 'undefined') {
             return 'light';
@@ -38,8 +43,13 @@ export function ThemeToggle() {
         return null;
     }
 
+    if (!mounted) {
+        return null;
+    }
+
     return (
         <Button
+            type="button"
             onClick={toggleTheme}
             variant="outline"
             size="icon-lg"
