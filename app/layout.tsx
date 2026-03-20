@@ -10,6 +10,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import Link from 'next/link';
 import Script from 'next/script';
 import { Button } from '@/components/ui/button';
+import { syncClerkUser } from '@/lib/sync-clerk-user';
 import { ThemeToggle } from '@/components/theme-toggle';
 import './globals.css';
 
@@ -39,11 +40,13 @@ const userButtonAppearance = {
     },
 } as const;
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    await syncClerkUser();
+
     return (
         <html
             lang="en"
