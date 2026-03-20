@@ -1,11 +1,33 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import prisma from '@/lib/prisma';
 
-export default function Home() {
+export default async function Home() {
+    let users:
+        | Array<{
+              id: number;
+              email: string;
+              name: string | null;
+              createdAt: Date;
+          }>
+        = [];
+    let databaseError: string | null = null;
+
+    try {
+        users = await prisma.user.findMany({
+            orderBy: { createdAt: 'desc' },
+            take: 5,
+        });
+    } catch (error) {
+        console.error('Failed to load users on the home page.', error);
+        databaseError =
+            'Failed to load users. Check DATABASE_URL and run the Prisma database setup commands.';
+    }
+
     return (
         <main className="flex flex-1">
             <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-10 sm:px-6 lg:justify-center lg:py-16">
-                <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+                <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
                     <section className="min-w-0 max-w-3xl space-y-6">
                         <p className="text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground">
                             StarterKit auth
@@ -54,6 +76,29 @@ export default function Home() {
                             <p className="mt-2 text-sm leading-6 text-muted-foreground">
                                 Dark and light modes are available from the header.
                             </p>
+                        </div>
+                        <div className="rounded-2xl border bg-card p-5 text-card-foreground shadow-sm">
+                            <p className="text-sm font-medium">Database</p>
+                            {databaseError ? (
+                                <p className="mt-2 text-sm leading-6 text-destructive">
+                                    {databaseError}
+                                </p>
+                            ) : users.length === 0 ? (
+                                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                                    Connected to PostgreSQL. No users found yet.
+                                </p>
+                            ) : (
+                                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                                    {users.map((user) => (
+                                        <li key={user.id} className="rounded-lg bg-muted px-3 py-2">
+                                            <p className="font-medium text-foreground">
+                                                {user.name ?? 'Unnamed user'}
+                                            </p>
+                                            <p>{user.email}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     </section>
                 </div>
