@@ -35,10 +35,14 @@ export default function RootLayout({
             className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
         >
             <body className="min-h-full flex flex-col">
-                <ClerkProvider>
+                <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up">
                     <header className="flex h-16 items-center justify-end gap-4 px-4">
                         <Show when="signed-out">
-                            <SignInButton />
+                            <SignInButton>
+                                <button className="cursor-pointer rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100">
+                                    Sign in
+                                </button>
+                            </SignInButton>
                             <SignUpButton>
                                 <button className="cursor-pointer rounded-full bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800">
                                     Sign up
